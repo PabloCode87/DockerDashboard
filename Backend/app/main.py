@@ -1,8 +1,8 @@
 from fastapi import FastAPI
-from prisma import Prisma
+from app.db.client import prisma
+from app.api.containers import router as contenedores_router
 
 app=FastAPI()
-prisma=Prisma()
 
 @app.on_event("startup")
 async def startup():
@@ -17,7 +17,4 @@ async def root():
     return{"messeage": "Docker Dashboard Backend OK"}
 
 
-@app.get("/containers")
-async def list_containers():
-    containers = await prisma.dockercontainer.find_many()
-    return containers
+app.include_router(contenedores_router)

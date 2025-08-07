@@ -16,15 +16,17 @@ datasource db {
 // Tablas y modelos
 
 model DockerContainer {
-  id          Int        @id @default(autoincrement())
-  containerId String     @unique
-  name        String
-  status      String
-  image       String
-  createdAt   DateTime   @default(now())
+  id            Int        @id @default(autoincrement())
+  containerId   String     @unique
+  name          String
+  status        String
+  image         String
+  createdAt     DateTime   @default(now())
+  cpuUsage      Float?
+  memoryUsage   Float?
 
-  logs        LogEntry[]
-  alerts      Alert[]
+  logs          LogEntry[]
+  alerts        Alert[]
 }
 
 model LogEntry {
