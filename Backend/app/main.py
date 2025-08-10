@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.db.client import prisma
-from app.api.containers import router as contenedores_router
+from app.api.container_controller import router as contenedores_router
 
 app=FastAPI()
 
