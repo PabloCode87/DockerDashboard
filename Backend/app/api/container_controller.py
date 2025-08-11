@@ -1,4 +1,5 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
+from typing import Optional
 from app.models.container import ContainerIn, ContainerOut
 from app.services import docker_service
 
@@ -6,24 +7,27 @@ router = APIRouter()
 
 #GET
 @router.get("/contenedores", response_model=list[ContainerOut])
-async def lista_contenedores():
-    return await docker_service.lista_contenedores()
+async def Lista_contenedores(id: Optional[int] = Query(None),
+                            name: Optional[str] = Query(None),
+                            status: Optional[str] = Query(None),
+                            image: Optional[str] = Query(None)):
+    return await docker_service.lista_contenedores(id=id, name=name, status=status, image=image)
 
 @router.get("/contenedores/{id}", response_model=ContainerOut)
-async def obtener_contenedor(id: int):
+async def Obtener_contenedor(id: int):
     return await docker_service.obtener_contenedor(id)
 
 #POST
 @router.post("/contenedores", response_model=ContainerOut)
-async def crear_contenedor(data: ContainerIn):
+async def Crear_contenedor(data: ContainerIn):
     return await docker_service.crear_contenedor(data)
 
 #PUT
 @router.put("/contenedores/{id}", response_model=ContainerOut)
-async def actualizar_contendor(id: int, data: ContainerIn):
+async def Actualizar_contendor(id: int, data: ContainerIn):
     return await docker_service.actualizar_contendor(id, data)
 
 #DELETE
 @router.delete("/contenedores/{id}")
-async def borrar_contenedor(id: int):
+async def Borrar_contenedor(id: int):
     return await docker_service.borrar_contenedor(id)

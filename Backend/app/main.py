@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from app.db.client import prisma
 from app.api.container_controller import router as contenedores_router
+from app.api.log_controller import router as log_controller
 
 app=FastAPI()
 
@@ -18,3 +19,4 @@ async def root():
 
 
 app.include_router(contenedores_router)
+app.include_router(log_controller)

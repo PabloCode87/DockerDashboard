@@ -1,4 +1,5 @@
 import random
+from typing import Optional
 from fastapi import HTTPException
 from app.db.client import prisma
 from app.models.container import ContainerIn, ContainerOut
@@ -6,8 +7,20 @@ from app.services.exception_handler import manejar_errores_servicio
 
 #GET
 @manejar_errores_servicio
-async def lista_contenedores() -> list[ContainerOut]:
-    return await prisma.dockercontainer.find_many()
+async def lista_contenedores(id: Optional[int] = None,name: Optional[str] = None,
+                            status: Optional[str] = None,
+                            image: Optional[str] = None,) -> list[ContainerOut]:
+    filtros = {}
+    if id is not None:
+        filtros['id'] = id
+    if name:
+        filtros['name'] = {'contains': name, 'mode': 'insensitive'}
+    if status:
+        filtros['status'] = {'equals': status, 'mode': 'insensitive'}
+    if image:
+        filtros['image'] = {'contains': image, 'mode': 'insensitive'}
+
+    return await prisma.dockercontainer.find_many(where=filtros)
 
 @manejar_errores_servicio
 async def obtener_contenedor(id: int) -> ContainerOut:
