@@ -1,0 +1,58 @@
+services:
+  backend:
+    build:
+      context: ../Backend
+      dockerfile: .build/Dockerfile
+    container_name: dockerdashboard-backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - ../Backend/.env
+    depends_on:
+      - db
+    volumes:
+      - ../Backend:/app
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ../Frontend
+      dockerfile: .build/Dockerfile
+    container_name: dockerdashboard-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  db:
+    image: postgres:15
+    container_name: dockerdashboard-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: dockerdashboard
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./Setup/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: dockerdashboard-grafana
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - db
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  grafana_data:
