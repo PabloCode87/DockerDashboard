@@ -49,3 +49,11 @@ model Alert {
 
   container   DockerContainer @relation(fields: [containerId], references: [containerId])
 }
+
+model ContainerMetrics {
+  id          Int      @id @default(autoincrement())
+  containerId String
+  cpuUsage    Float
+  memoryUsage Float
+  collectedAt   DateTime @default(now())
+}
